@@ -420,7 +420,8 @@ const Hero = () => {
   const team = [
     { name: "Aswini M S", role: "Frontend Architect", img: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070" },
     { name: "Aswin Krishna C P", role: "Fullstack Engineer", img: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070" },
-    { name: "Bala Mugesh M K", role: "Systems Designer", img: "https://images.unsplash.com/photo-1504639725590-34d0984388bd?q=80&w=1974" }
+    { name: "Bala Mugesh M K", role: "Systems Designer", img: "https://images.unsplash.com/photo-1504639725590-34d0984388bd?q=80&w=1974" },
+    { name: "Kruthika S", role: "UI/UX Designer", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974" }
   ];
 
   const works = [
