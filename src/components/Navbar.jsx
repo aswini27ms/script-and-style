@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import MobileSidebar from './MobileSidebar';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     const handleMouseMove = (e) => setMousePos({ x: e.clientX, y: e.clientY });
-    
+
     window.addEventListener('scroll', handleScroll);
     window.addEventListener('mousemove', handleMouseMove);
     return () => {
@@ -16,6 +18,17 @@ const Navbar = () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
   }, []);
+
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [mobileMenuOpen]);
 
   return (
     <>
@@ -137,41 +150,40 @@ const Navbar = () => {
         .bg-black-void { background-color: #000000; }
       `}</style>
 
-      <nav className={`fixed top-0 w-full z-[100] transition-all duration-700 bg-black-void ${scrolled ? 'h-20 border-b border-cyan-500/20' : 'h-28'}`}>
-        
-        {/* Ambient Mouse Glow */}
-        <div 
-          className="absolute inset-0 pointer-events-none opacity-30"
+      <nav className={`fixed top-0 w-full z-[100] transition-all duration-300 bg-black-void ${scrolled ? 'h-16 md:h-20 border-b border-cyan-500/20' : 'h-20 md:h-24'}`}>
+
+        {/* Ambient Mouse Glow - Desktop Only */}
+        <div
+          className="hidden lg:block absolute inset-0 pointer-events-none opacity-30"
           style={{
             background: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, rgba(0, 243, 255, 0.08) 0%, transparent 70%)`
           }}
         />
 
-        <div className="container mx-auto px-6 lg:px-12 h-full flex items-center justify-between relative">
-          
+        <div className="container mx-auto px-4 md:px-6 lg:px-12 h-full flex items-center justify-between relative">
+
           {/* --- LEFT: LOGO --- */}
-          <Link to="/" className="flex items-center gap-4 logo-group cursor-pointer min-w-[250px] no-underline">
+          <Link to="/" className="flex items-center gap-2 md:gap-4 logo-group cursor-pointer no-underline z-10">
             <div className="relative">
-              <div className="w-10 h-10 logo-diamond-outer rotate-45 flex items-center justify-center">
-                <div className="w-6 h-6 border border-pink-500 rotate-45 animate-pulse" />
+              <div className="w-8 h-8 md:w-10 md:h-10 logo-diamond-outer rotate-45 flex items-center justify-center">
+                <div className="w-4 h-4 md:w-6 md:h-6 border border-pink-500 rotate-45 animate-pulse" />
               </div>
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-black font-orbitron text-white tracking-tighter">
+              <span className="text-base md:text-xl font-black font-orbitron text-white tracking-tighter">
                 SCRIPT<span className="text-cyan-400">&</span>STYLE
               </span>
-              <span className="text-[7px] font-mono text-cyan-500/30 tracking-[0.4em] uppercase">Void_Protocol_v4</span>
+              <span className="hidden md:block text-[7px] font-mono text-cyan-500/30 tracking-[0.4em] uppercase">Void_Protocol_v4</span>
             </div>
           </Link>
 
-          {/* --- CENTER: NAVIGATION --- */}
+          {/* --- CENTER: NAVIGATION - Desktop Only --- */}
           <div className="hidden lg:flex items-center justify-center gap-2 xl:gap-8 flex-1">
             {[
               { label: 'Home', path: '/' },
-              { label: 'About Us', path: '/about' },
+              { label: 'About', path: '/about' },
               { label: 'Services', path: '/services' },
-              { label: 'Pricing', path: '/pricing' },
-              { label: 'Contact Us', path: '/contact' }
+              { label: 'Pricing', path: '/pricing' }
             ].map((item) => (
               <Link key={item.label} to={item.path} className="nav-module group/mod">
                 <div className="module-scan" />
@@ -183,10 +195,20 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* --- RIGHT: CTA --- */}
-          <div className="flex items-center justify-end min-w-[250px]">
-            <button className="btn-fragment">
-              <span className="relative z-10">SYNC_INTERFACE</span>
+          {/* --- RIGHT: CTA & Mobile Menu --- */}
+          <div className="flex items-center gap-4">
+            <button className="hidden md:block btn-fragment">
+              <span className="relative z-10">GET IN TOUCH</span>
+            </button>
+
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="lg:hidden w-10 h-10 flex items-center justify-center text-cyan-400 hover:text-white transition-colors z-10"
+              aria-label="Open menu"
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
             </button>
           </div>
         </div>
@@ -194,6 +216,8 @@ const Navbar = () => {
         {/* HUD Bottom Line */}
         <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent" />
       </nav>
+
+      <MobileSidebar isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
     </>
   );
 };
